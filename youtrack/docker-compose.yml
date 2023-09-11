@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  # YouTrack APP
+  youtrack:
+    image: jetbrains/youtrack:2023.1.9689
+    container_name: "youtrack-board"
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/opt/youtrack/data
+      - ./conf:/opt/youtrack/conf
+      - ./logs:/opt/youtrack/logs
+      - ./backups:/opt/youtrack/backups
+    deploy:
+      placement:
+        constraints:
+          - node.labels.youtrack.data == true
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge
