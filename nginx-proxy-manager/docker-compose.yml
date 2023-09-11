@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Docker app
+  proxy_app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: proxy_app
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    environment:
+      DB_MYSQL_HOST: "proxy_db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "$MYSQL_USER"
+      DB_MYSQL_PASSWORD: "$MYSQL_PASSWORD"
+      DB_MYSQL_NAME: "$MYSQL_DATABASE"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - app_network
+
+  # Docker db
+  proxy_db:
+    image: 'jc21/mariadb-aria:latest'
+    container_name: proxy_db
+    environment:
+      MYSQL_ROOT_PASSWORD: '$MYSQL_ROOT_PASSWORD'
+      MYSQL_DATABASE: '$MYSQL_DATABASE'
+      MYSQL_USER: '$MYSQL_USER'
+      MYSQL_PASSWORD: '$MYSQL_PASSWORD'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge

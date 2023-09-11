@@ -1,0 +1,47 @@
+api:
+  dashboard: true
+  insecure: true
+
+ping: {}
+
+providers:
+  file:
+    directory: /etc/traefik/conf
+    watch: true
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: :443
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: admin@exemple.com
+      storage: /certs/acme.json
+      httpChallenge:
+        entryPoint: web
+
+log:
+  filePath: './logs/traefik.log'
+
+accessLog:
+  filePath: './logs/access.log'
+
+metrics:
+  influxDB:
+    address: localhost:8086
+    database: treafik
+    username:
+    password:
+    pushInterval: 60s

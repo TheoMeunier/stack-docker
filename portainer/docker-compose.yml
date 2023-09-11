@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+
+  # Docker app
+  portainer-app:
+    image: portainer/portainer-ce:latest
+    container_name: portainer-app
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer-data:/data
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge

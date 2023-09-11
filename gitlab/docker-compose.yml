@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  # Docker app
+  gitlab-app:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: unless-stopped
+    container_name: gitlab_app
+    pull_policy: always
+    hostname: gitlab.exemple.fr
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://gitlab.exemple.fr'
+    ports:
+      - '22:22'
+    volumes:
+      - './config:/etc/gitlab'
+      - './logs:/var/log/gitlab'
+      - './data:/var/opt/gitlab'
+    shm_size: '256m'
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge

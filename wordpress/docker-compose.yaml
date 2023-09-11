@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+
+  # Docker app
+  wordpress_app:
+    image: wordpress
+    restart: unless-stopped
+    container_name: wordpress_app
+    depends_on:
+      - wordpress_db
+    volumes:
+      - ./data:/var/www/html
+    networks:
+      - app_network
+
+  # Docker database
+  wordpress_db:
+    image: mariadb:latest
+    restart: unless-stopped
+    container_name: wordpress_db
+    environment:
+      MYSQL_DATABASE: $DATABASE_NAME
+      MYSQL_USER: $DATABASE_USER
+      MYSQL_PASSWORD: $DATABASE_PASSWORD
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge

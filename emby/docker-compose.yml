@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+
+  # Docker app
+  emby:
+    image: emby/embyserver
+    container_name: emby_app
+    restart: unless-stopped
+    ports:
+      - "8080:8096"
+    environment:
+      - UID=1000
+      - GID=100
+      - GIDLIST=100
+      - TZ=Europe/Paris
+      - UMASK=022
+    volumes:
+      - /path/to/programdata:/config
+      - /path/to/tvshows:/mnt/share1
+      - /path/to/movies:/mnt/share2
+    devices:
+      - /dev/dri:/dev/dri # VAAPI/NVDEC/NVENC render nodes
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge

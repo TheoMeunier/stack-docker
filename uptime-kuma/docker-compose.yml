@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+
+  #Docker App
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    container_name: uptimekuma
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./data:/app/data
+    networks:
+      - app_network
+
+#Docker network
+networks:
+  app_network:
+    driver: bridge

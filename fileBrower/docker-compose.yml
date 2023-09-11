@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+
+  # Docker App
+  filebrowser:
+    image: hurlenko/filebrowser
+    restart: unless-stopped
+    container_name: filebrower_app
+    user: "root:root"
+    ports:
+      - "8080:8080"
+    volumes:
+      - /data:/data
+      - /CONFIG_DIR:/config
+    environment:
+      - FB_BASEURL=/filebrowser
+    networks:
+      - app_network
+
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge

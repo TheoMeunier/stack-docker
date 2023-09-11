@@ -1,0 +1,15 @@
+http:
+  routers:
+    exemple-router:
+      rule: "Host(`exemple.com`)"
+      entryPoints:
+        - websecure
+      service: exemple-service
+      tls:
+        certResolver: myresolver
+
+  services:
+    exemple-service:
+      loadBalancer:
+        servers:
+          - url: "url.interne.com:port"

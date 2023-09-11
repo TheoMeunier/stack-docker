@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Docekr Database
+  nextcloud_db:
+    image: mariadb:latest
+    container_name: nextcloud_db
+    restart:  unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=$NEXTCLOUD_MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=$NEXTCLOUD_MYSQL_DATABASE
+      - MYSQL_USER=$NEXTCLOUD_MYSQL_USER
+      - MYSQL_PASSWORD=$NEXTCLOUD_MYSQL_PASSWORD
+    networks:
+      - app_network
+
+  # Docker App
+  nextcloud_app:
+    image: nextcloud
+    restart:  unless-stopped
+    container_name: nextcloud_app
+    depends_on:
+      - nextcloud_db
+    volumes:
+      - ./data:/var/www/html
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge
