@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  # Docker app
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin_app
+    restart: "unless-stopped"
+    ports:
+      - "8080:8096"
+    volumes:
+      - /path/to/config:/config
+      - /path/to/cache:/cache
+      - /path/to/media:/media
+      - /path/to/media2:/media2:ro
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://exemple.fr
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge
