@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  # Docker App
+  roundcubemail:
+    image: roundcube/roundcubemail:latest
+    container_name: roundcubemail
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - roundcubedb
+    environment:
+      ROUNDCUBEMAIL_DB_TYPE: mysql
+      ROUNDCUBEMAIL_DB_HOST: roundcubedb
+      ROUNDCUBEMAIL_DB_PASSWORD: ${MYSQL_PASSWORD}
+      ROUNDCUBEMAIL_SKIN: elastic
+      ROUNDCUBEMAIL_DEFAULT_HOST: tls://${MAIL_HOST}
+      ROUNDCUBEMAIL_SMTP_SERVER: tls://${MAIL_HOST}
+    volumes:
+      - ./www:/var/www/html
+    networks:
+      - app_network
+
+  # Docker Database
+  roundcubedb:
+    image: mysql:5.7
+    container_name: roundcubedb
+    restart: unless-stopped
+    ports:
+      - "33006:3306"
+    volumes:
+      - ./db/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - app_network
+
+# Docker Networks
+networks:
+  app_network:
+    driver: bridge
